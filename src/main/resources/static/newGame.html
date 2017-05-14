@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hangmanApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styling.css">
+</head>
+<body ng-controller="GameController">
+
+<div ng-show="!gameLoaded">
+    <button ng-click="createNewGame()" class="btn btn-primary btn-lg btn-block">Start Game</button>
+</div>
+<div ng-show="isInError">
+    <h1>An Error has occurred!</h1>
+</div>
+<div ng-show="gameLoaded">
+    <h1 class="text-center">GameId: {{game.gameId}} (You Will need this if you wish to reload your game later)</h1>
+    <h2 ng-show="loser">You Lose!</h2>
+    <h2 ng-show="winner">You Win!</h2>
+    <div class="container-fluid">
+        <div class="well">
+            <div class="secretWord">
+                <ul class="list-inline">
+                    <li ng-repeat="character in obfuscatedWord track by $index">
+                        <span>{{character}}</span>
+                    </li>
+                </ul>
+            </div>
+            <ul class="list-inline">
+                <li ng-repeat="letter in letters">
+                    <button class="btn btn-primary letter-button" ng-disabled="letter.isUsed"
+                            ng-click="handleUpdate(letter.character)">{{letter.character}}
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <h2 class="text-center">You have {{attemptsLeft}} attempts left</h2>
+    <button ng-click="killGame()" class="btn btn-primary btn-sm btn-block">Leave Game</button>
+</div>
+
+<script type="text/javascript" src="js/angular.js"></script>
+<script type="text/javascript" src="js/letter.js"></script>
+<script type="text/javascript" src="js/gameUpdateInfo.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
