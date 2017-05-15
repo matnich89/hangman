@@ -9,8 +9,3 @@ Once the application is up and running please navigate to localhost:8090 and you
 
 The app was created using intelli
 
-Also apologies for not using gradle... but maven is what I am familiar with at this point
-
-Thank you for an interesting test, I learnt a lot while completing it.
-
-
