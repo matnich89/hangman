@@ -1,11 +1,11 @@
 package service;
 
-import com.techtest.HangmanApplication;
-import com.techtest.dao.GameDao;
-import com.techtest.domain.dto.GameDto;
-import com.techtest.domain.dto.GameUpdateInfo;
-import com.techtest.domain.entity.GameEntity;
-import com.techtest.service.GameDataService;
+import com.mat.HangmanApplication;
+import com.mat.dao.GameDao;
+import com.mat.domain.dto.GameDto;
+import com.mat.domain.dto.GameUpdateInfo;
+import com.mat.domain.entity.GameEntity;
+import com.mat.service.GameDataService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
