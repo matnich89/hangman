@@ -12,6 +12,9 @@ public abstract class BasicGameInfo implements Serializable {
         this.gameId = gameId;
     }
 
+    /*
+     Required For Jackson
+     */
     BasicGameInfo() {
     }
 

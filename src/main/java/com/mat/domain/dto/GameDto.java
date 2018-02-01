@@ -14,6 +14,9 @@ public class GameDto extends BasicGameInfo {
         this.word = word;
     }
 
+    /*
+     Required For Jackson
+     */
     public GameDto() {
     }
 
@@ -25,9 +28,7 @@ public class GameDto extends BasicGameInfo {
         this.word = word;
     }
 
-    /*
-     Required For Jackson
-     */
+
     public Set<String> getUsedCharacters() {
         return usedCharacters;
     }

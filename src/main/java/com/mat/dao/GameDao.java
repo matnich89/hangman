@@ -13,6 +13,11 @@ public class GameDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Creates a new game
+     * @param gameEntity
+     * @return
+     */
     @Transactional
     public GameEntity create(final GameEntity gameEntity)
     {
@@ -21,12 +26,21 @@ public class GameDao {
         return gameEntity;
     }
 
+    /**
+     * Loads an existing game
+     * @param id
+     * @return
+     */
     @Transactional
     public GameEntity load(final long id) {
         final GameEntity gameEntity = entityManager.find(GameEntity.class, id);
         return gameEntity;
     }
 
+    /**
+     * Updates the state of a game
+     * @param gameEntity
+     */
     @Transactional
     public void update(final GameEntity gameEntity)
     {
