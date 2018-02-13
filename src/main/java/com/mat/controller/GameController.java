@@ -22,7 +22,7 @@ public class GameController {
 
     @RequestMapping(value = "/create", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public GameDto create() throws ExecutionException, InterruptedException {
+    public GameDto create() {
         logger.info("Create request received");
         return gameDataService.create();
     }
@@ -36,13 +36,13 @@ public class GameController {
 
     @RequestMapping(value = "/load", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public GameDto load(@RequestParam("gameid") final long id) throws ExecutionException, InterruptedException {
+    public GameDto load(@RequestParam("gameid") final long id) {
         logger.info("Load request recieved for game: {}", id);
         return gameDataService.load(id);
     }
 
     @RequestMapping(value = "/poll", produces = "application/json", method = RequestMethod.GET)
-    public GameDto poll(@RequestParam("gameid") final long id) throws ExecutionException, InterruptedException {
+    public GameDto poll(@RequestParam("gameid") final long id) {
         logger.info("Poll request received for game: {}", id);
         return gameDataService.poll(id);
     }
