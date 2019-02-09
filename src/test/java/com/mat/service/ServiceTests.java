@@ -1,7 +1,7 @@
 package com.mat.service;
 
 import com.mat.HangmanApplication;
-import com.mat.dao.GameDao;
+import com.mat.repository.GameRepository;
 import com.mat.domain.dto.GameDto;
 import com.mat.domain.dto.GameUpdateInfo;
 import com.mat.domain.entity.GameEntity;
@@ -17,8 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.concurrent.ExecutionException;
-
 import static org.mockito.Matchers.any;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,7 +28,7 @@ public class ServiceTests {
     private GameDataService gameDataService;
 
     @MockBean
-    private GameDao gameDao;
+    private GameRepository gameRepository;
 
     private final GameEntity gameEntityToReturn = new GameEntity();
 
@@ -46,8 +44,8 @@ public class ServiceTests {
         gameEntityToReturn.setGameId(MOCK_ID);
         gameEntityToReturn.setAttemptsLeft(10);
         gameEntityToReturn.setWord(MOCK_WORD);
-        Mockito.when(gameDao.create(any(GameEntity.class))).thenReturn(gameEntityToReturn);
-        Mockito.when(gameDao.load(MOCK_ID)).thenReturn(gameEntityToReturn);
+        Mockito.when(gameRepository.save(any(GameEntity.class))).thenReturn(gameEntityToReturn);
+        Mockito.when(gameRepository.findOne(MOCK_ID)).thenReturn(gameEntityToReturn);
     }
 
 
@@ -101,13 +99,13 @@ public class ServiceTests {
     public void shouldNotAttemptToLoadFromDataBaseWhenGameIsInCache(){
         gameDataService.create();
         gameDataService.load(1234L);
-        Mockito.verify(gameDao, Mockito.never()).load(1234L);
+        Mockito.verify(gameRepository, Mockito.never()).findOne(1234L);
     }
 
     @Test
     public void shouldAttemptToLoadFromDataBaseWhenGameIsInCache() {
         gameDataService.load(12345L);
-        Mockito.verify(gameDao, Mockito.times(1)).load(12345L);
+        Mockito.verify(gameRepository, Mockito.times(1)).findOne(12345L);
     }
 
     @Test

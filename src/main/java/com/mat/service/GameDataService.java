@@ -2,7 +2,7 @@ package com.mat.service;
 
 
 import com.mat.controller.GameController;
-import com.mat.dao.GameDao;
+import com.mat.repository.GameRepository;
 import com.mat.domain.dto.GameDto;
 import com.mat.domain.dto.GameUpdateInfo;
 import com.mat.domain.entity.GameEntity;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 public class GameDataService {
 
     @Autowired
-    private GameDao gameDao;
+    private GameRepository gameRepository;
 
     private final Map<Long, GameDto> currentGames = new ConcurrentHashMap<>();
     private final Map<Long, Object> locks = new ConcurrentHashMap<>();
@@ -39,7 +40,7 @@ public class GameDataService {
         logger.info("Received create request");
         GameDto gameDto;
         try {
-            gameDto = convertEntityToDto(gameDao.create(new GameEntity(WordGenerationUtil.selectWord())));
+            gameDto = convertEntityToDto(gameRepository.save(new GameEntity(WordGenerationUtil.selectWord())));
         } catch (ExecutionException | InterruptedException e) {
             return new GameDto();
         }
@@ -63,7 +64,7 @@ public class GameDataService {
             }
             currentGames.replace(gameDto.getGameId(), gameDto);
 
-            gameDao.update(convertDtoToEntityAndPersist(gameDto, gameUpdateInfo));
+            gameRepository.save(convertDtoToEntityAndPersist(gameDto, gameUpdateInfo));
 
             locks.remove(gameDto.getGameId());
         }
@@ -83,7 +84,7 @@ public class GameDataService {
 
             if (gameDto.getNumberOfPlayers() <= 0) {
                 // No one is playing the game so move from cache and store on disk
-                gameDao.update(convertDtoToEntityAndPersist(gameDto, null));
+                gameRepository.save(convertDtoToEntityAndPersist(gameDto, null));
             } else {
                 currentGames.replace(id, gameDto);
             }
@@ -104,7 +105,7 @@ public class GameDataService {
         GameDto gameDto = currentGames.get(id);
         if (gameDto == null) {
             try {
-                gameDto = convertEntityToDto(gameDao.load(id));
+                gameDto = convertEntityToDto(gameRepository.findOne(id));
             } catch (ExecutionException | InterruptedException e) {
                 return new GameDto();
             }
@@ -172,7 +173,7 @@ public class GameDataService {
     }
 
     private GameEntity convertDtoToEntityAndPersist(final GameDto gameDto, final GameUpdateInfo gameUpdateInfo) {
-        final GameEntity gameEntity = gameDao.load(gameDto.getGameId());
+        final GameEntity gameEntity = gameRepository.findOne(gameDto.getGameId());
         if (gameUpdateInfo != null) {
             gameEntity.addUsedEntity(new UsedCharacterEntity(gameUpdateInfo.getUsedCharacter()));
         }
@@ -200,7 +201,7 @@ public class GameDataService {
                  so lets go and get the game from the database;
                  */
                 try {
-                    gameDto = convertEntityToDto(gameDao.load(id));
+                    gameDto = convertEntityToDto(gameRepository.findOne(id));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -219,7 +220,7 @@ public class GameDataService {
      * @throws InterruptedException
      */
     public Set<GameDto> peek() {
-        return currentGames.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+        return new HashSet<>(currentGames.values());
     }
 
     private Object getUpdateSyncObject(final long id) {
